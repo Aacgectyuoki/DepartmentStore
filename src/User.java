@@ -66,6 +66,23 @@ class User {
         return false;
     }
 
+    public void deductSuperCoins(String username, int coins) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "UPDATE Users SET superCoins = superCoins - ? WHERE username = ? AND superCoins >= ?")) {
+            stmt.setInt(1, coins);
+            stmt.setString(2, username);
+            stmt.setInt(3, coins);
+            int updatedRows = stmt.executeUpdate();
+            if (updatedRows > 0) {
+                System.out.println("✅ SuperCoins deducted successfully.");
+            } else {
+                System.out.println("❌ Not enough SuperCoins.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public String toString() {
